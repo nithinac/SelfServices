@@ -9,7 +9,7 @@ namespace SelfServices.Utilities
     {
         public static void LogException(Exception e)
         {
-            //System.IO.File.WriteAllText("D:\\log.txt", e.Message);
+            System.IO.File.WriteAllText("D:\\log.txt", e.Message);
         }
     }
 }

@@ -21,33 +21,54 @@ namespace SelfServices.Models
             }
             set
             {
-                password = value;
+                password = HashPassword(value);
             }
         }
 
         public string CustomerId { get; set; }
         public string SecurityQuestion { get; set; }
         public string SecurtiyAnswer { get; set; }
+        public string EmailId { get; set; }
+
+        public void LoadUserDetails()
+        {
+            if(Username!=null)
+            {
+                User temp = DataAccessHelper.GetUser(Username);
+                CustomerId = temp.CustomerId;
+                SecurityQuestion = temp.SecurityQuestion;
+                SecurtiyAnswer = temp.SecurtiyAnswer;
+                EmailId = temp.EmailId;                
+            }
+            
+        }
 
         public User() { }
 
-        public User(string username, string password, string customerId, string securityQuestion, string securityAnswer)
+        public User(string username,string password)
+        {
+            Username = username;
+            Password = password;
+        }
+
+        public User(string username, string password, string customerId, string securityQuestion, string securityAnswer, string emailId)
         {
             Username = username;
             Password = password;
             CustomerId = customerId;
             SecurityQuestion = securityQuestion;
             SecurtiyAnswer = securityAnswer;
+            EmailId = emailId;
         }
 
         private static string HashPassword(string password)
         {
             MD5 hasher = MD5.Create();
             byte[] hashBytes=hasher.ComputeHash(Encoding.UTF8.GetBytes(password));
-            string hash = Encoding.UTF8.GetString(hashBytes);
+            string hash = Encoding.ASCII.GetString(hashBytes);
             return hash;
         }
-
+        
         public static bool IsRegistered(User user)
         {
             return DataAccessHelper.IsUserExists(user);            
@@ -65,5 +86,11 @@ namespace SelfServices.Models
                 return false;
             }
         }
+    }
+
+    public class UserLoginModel
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }

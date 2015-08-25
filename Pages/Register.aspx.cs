@@ -13,19 +13,27 @@ namespace SelfServices.Pages
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            ViewState["error"] = "";
-            if(Request.Form.Count!=0)
+            Response.Cache.SetExpires(DateTime.UtcNow.AddDays(-1));
+            Response.Cache.SetValidUntilExpires(false);
+            Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetNoStore();
+
+            if (Request.Form.Count != 0)
             {
-                User user = new Models.User(Request.Form["username"], Request.Form["password"], Request.Form["customerId"], Request.Form["secQuestion"], Request.Form["secAnswer"]);
-                if(Models.User.TryRegister(user))
+                User user = new Models.User(Request.Form["username"], Request.Form["password"], Request.Form["customerId"], Request.Form["securityQuestion"], Request.Form["securityAnswer"], Request.Form["email"]);
+                if (Models.User.TryRegister(user))
                 {
-                    Response.Redirect("/Pages/Login.aspx");
+                    Session.Add("customerId", user.CustomerId);
+                    Response.Redirect("/Pages/OrderStatus.aspx");
                 }
                 else
                 {
-                    ViewState["error"] = "Customer Id/Username already registered";
+                    Response.Redirect("/Pages/Index.aspx?tab=register&error=true");
                 }
             }
+            else
+                Response.Redirect("/Pages/Index.aspx");
         }
 
         //[WebMethod]

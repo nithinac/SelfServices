@@ -28,7 +28,7 @@
                                   <input type="password" class="form-control" id="password" name="password" value="" required="" title="Please enter your password" placeholder="password"/>                                  
                               </div>
                               <a href="Pages/ForgotPassword.aspx" id="forgotPwd" class="text-info">Forgot Password?</a>
-                              <div id="loginErrorMsg" class="alert alert-error hide">Invalid username/password</div><br/><br/>
+                              <div id="loginErrorMsg" class="alert alert-error"><%=ViewState["error"] %></div>
 
                               <button type="submit" class="btn btn-success btn-block">Login</button>
                           </form>
@@ -36,12 +36,13 @@
                   </div>
                   <div class="col-xs-6">
                       <p class="lead" >Register Now</p>
-                      <ul class="list-unstyled" style="line-height: 1.9">
+                      <ul class="list-unstyled" style="line-height: 1.95">
                           <li><span class="fa fa-check text-success"></span> Check Order Status</li>
                           <li><span class="fa fa-check text-success"></span> Change Installation Date</li>
                           <li><span class="fa fa-check text-success"></span> Cancel Order</li>
-                          <li><span class="fa fa-check text-success"></span> View and Pay Bill</li>
-			  <li><span class="fa fa-check text-success"></span> Report Problems</li>
+                          <li><span class="fa fa-check text-success"></span> View Bill</li>
+                          <li><span class="fa fa-check text-success"></span> Pay Bill</li>
+			              <li><span class="fa fa-check text-success"></span> Report Problems</li>
                       </ul>
 		      <br/>
                       <p><a href="/Pages/Register.aspx" class="btn btn-info btn-block">Register now!</a></p>

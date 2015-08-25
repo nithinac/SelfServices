@@ -12,12 +12,44 @@ namespace SelfServices.Utilities
     {
         private static string CONNECTION_STRING = ConfigurationManager.ConnectionStrings["oracleXE"].ConnectionString;
 
-        private static string PROFILE_PULL_URL = "";
+        
 
-        private static string BILL_PULL_URL = "";
+        public static User GetUser(string username)
+        {
+            User user = null;
+            if (username != null)
+            {
+                try
+                {
+                    using (OracleConnection connection = new OracleConnection(CONNECTION_STRING))
+                    {
+                        OracleCommand command = new OracleCommand();
+                        command.CommandText = "SELECT password,customerId,securityQuestion,securityAnswer,email FROM Users WHERE username LIKE :username";
+                        command.Parameters.Add(":username", OracleDbType.NVarchar2).Value = username;
+                        command.Connection = connection;
+                        connection.Open();
+                        OracleDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            string password = reader["password"].ToString();
+                            string customerId = reader["customerId"].ToString();
+                            string securityQuestion = reader["securityQuestion"].ToString();
+                            string securityAnswer = reader["securityAnswer"].ToString();
+                            string email = reader["email"].ToString();
+                            user = new User(username, password, customerId, securityQuestion, securityAnswer, email);
+                        }
+                    }
+                }
 
-        private static string BILL_PAY_URL = "";
-
+                catch (Exception e)
+                {
+                    user = null;
+                    Logger.LogException(e);
+                }
+            }
+            return user;
+        }
+    
 
         public static bool IsUserExists(User user)
         {
@@ -34,7 +66,7 @@ namespace SelfServices.Utilities
                         command.Parameters.Add(":password", OracleDbType.NVarchar2).Value = user.Password;
                         command.Connection = connection;
                         connection.Open();
-                        int count = (int)command.ExecuteScalar();
+                        int count = Convert.ToInt32(command.ExecuteScalar());
                         if (count == 1)
                             exists= true;
                         else
@@ -102,12 +134,13 @@ namespace SelfServices.Utilities
                     using (OracleConnection connection = new OracleConnection(CONNECTION_STRING))
                     {
                         OracleCommand command = new OracleCommand();
-                        command.CommandText = "INSERT INTO Users VALUES(:username,:password,:customerId,:securityQuestion,:securityAnswer)";
+                        command.CommandText = "INSERT INTO Users VALUES(:username,:password,:customerId,:securityQuestion,:securityAnswer,:email)";
                         command.Parameters.Add(":username", OracleDbType.NVarchar2).Value = user.Username;
                         command.Parameters.Add(":password", OracleDbType.NVarchar2).Value = user.Password;
                         command.Parameters.Add(":customerId", OracleDbType.NVarchar2).Value = user.CustomerId;
                         command.Parameters.Add(":securityQuestion", OracleDbType.NVarchar2).Value = user.SecurityQuestion;
                         command.Parameters.Add(":securityAnswer", OracleDbType.NVarchar2).Value = user.SecurtiyAnswer;
+                        command.Parameters.Add(":email", OracleDbType.NVarchar2).Value = user.EmailId;
                         command.Connection = connection;
                         connection.Open();
                         command.ExecuteNonQuery();
