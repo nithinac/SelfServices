@@ -25,7 +25,8 @@ namespace SelfServices.Utilities
         public static Profile PullProfile(string customerId)
         {
             Profile customProfile = null;
-            string profileJson = GetJsonFromUrl(String.Format(@"{0}/{1}", PROFILE_PULL_URL, customerId));
+            //string profileJson = GetJsonFromUrl(String.Format(@"{0}/{1}", PROFILE_PULL_URL, customerId));
+            string profileJson = File.ReadAllText("");//give json file path here
             if(!String.IsNullOrWhiteSpace(profileJson))
             {
                 ProfilePull fullProfile = GetObjectFromJson<ProfilePull>(profileJson);
