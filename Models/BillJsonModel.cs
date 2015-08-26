@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using SelfServices.Utilities;
 
 namespace SelfServices.Models
 {
@@ -17,6 +18,11 @@ namespace SelfServices.Models
         public Total_Due_By_Date Total_Due_by_Date { get; set; }
         public Details_Of_Current_Charges Details_of_Current_Charges { get; set; }
         public Total_Due Total_Due { get; set; }
+
+        public static Bill GetUserBill(string customerId)
+        {
+            return ServiceJsonHelper.GetBill(customerId);
+        }
     }
 
     public class Name
