@@ -154,5 +154,38 @@ namespace SelfServices.Utilities
             }
         }
 
+        public static bool IsBillPaid(string customerId, string paidDate)
+        {
+            bool paid = false;
+            if (!String.IsNullOrWhiteSpace(customerId) && paidDate != null)
+            {
+                try
+                {
+                    using (OracleConnection connection = new OracleConnection(CONNECTION_STRING))
+                    {
+                        OracleCommand command = new OracleCommand();
+                        command.CommandText = "SELECT COUNT(*) FROM BillPayLog WHERE customerId LIKE :cid AND paidDate LIKE :pdate";
+                        command.Parameters.Add(":cid", OracleDbType.NVarchar2).Value = customerId;
+                        command.Parameters.Add(":pdate", OracleDbType.NVarchar2).Value = paidDate;
+                        command.Connection = connection;
+                        connection.Open();
+                        int count = Convert.ToInt32(command.ExecuteScalar());
+                        if (count == 1)
+                            paid = true;
+                        else
+                            paid = false;
+                    }
+                }
+
+                catch (Exception e)
+                {
+                    paid = false;
+                    Logger.LogException(e);
+                }
+            }
+            return paid;
+        }
+    }
+
     }
 }

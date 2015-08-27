@@ -78,8 +78,13 @@ namespace SelfServices.Models
         {
             if(DataAccessHelper.IsUserNameAvailable(user.Username) && DataAccessHelper.IsCustomerIdAvailable(user.CustomerId))
             {
-                DataAccessHelper.RegisterUser(user);
-                return true;
+                if (ServiceJsonHelper.PullProfile(user.CustomerId) != null)
+                {
+                    DataAccessHelper.RegisterUser(user);
+                    return true;
+                }
+                else
+                    return false;
             }
             else
             {
